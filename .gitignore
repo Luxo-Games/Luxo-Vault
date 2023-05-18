@@ -1,0 +1,72 @@
+# Compiled Object files
+*.sln.cache
+*.dll
+*.exe
+*.pdb
+*.dll.config
+*.exe.config
+*.obj
+*.o
+*.a
+*.lib
+*.so
+*.dylib
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.swp
+*.[Cc]ache
+*.DS_Store
+[Bb]in/
+[Oo]bj/
+
+# Rider-specific files and directories
+.idea/
+*.sln.iml
+*.csproj.user
+*.resharper
+*.resharper.user
+*.sln.DotSettings.user
+*.suo
+*.userprefs
+*.ide/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+_ReSharper*/
+
+# NuGet Packages
+*.nuget.props
+*.nuget.targets
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# Visual Studio code coverage results
+*.coverage
+*.coveragexml
+*.opencover*
+*.dotCover
+
+# TeamCity artifacts directory
+_TeamCity*
+
+# GhostDoc plugin setting file
+*.GhostDoc.xml
+
+# StyleCop
+StyleCopReport.xml
+
+# Paket dependency manager
+.paket/paket.exe
+.paket/paket.targets
+paket-files/
