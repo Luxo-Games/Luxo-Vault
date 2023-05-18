@@ -1,4 +1,5 @@
-﻿using Google.Protobuf;
+﻿using ProtoBuf;
+using Google.Protobuf;
 using Vault.Interfaces;
 
 namespace Vault;
