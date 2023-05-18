@@ -1,8 +1,7 @@
-﻿using ProtoBuf;
-using Google.Protobuf;
+﻿using Google.Protobuf;
 using Vault.Interfaces;
 
-namespace Vault;
+namespace LuxoVault.ProtobufImplementation;
 
 public class ProtoVaultApi<T> : IVault<T> where T : IMessage<T>, new()
 {
@@ -23,21 +22,13 @@ public class ProtoVaultApi<T> : IVault<T> where T : IMessage<T>, new()
 
     public async Task SaveData(T data, string filename)
     {
-        try
-        {
-            byte[] serializedData = data.ToByteArray();
-            ByteArrayContent content = new ByteArrayContent(serializedData);
-            HttpResponseMessage response = await httpClient.PostAsync($"api/save/{filename}", content);
+        byte[] serializedData = data.ToByteArray();
+        ByteArrayContent content = new ByteArrayContent(serializedData);
+        HttpResponseMessage response = await httpClient.PostAsync($"api/save/{filename}", content);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to save data. Status code: {response.StatusCode}");
-            }
-        }
-        catch (Exception ex)
+        if (!response.IsSuccessStatusCode)
         {
-            Console.WriteLine($"An error occurred while saving data: {ex.Message}");
-            throw;
+            throw new Exception($"Failed to save data. Status code: {response.StatusCode}");
         }
     }
 

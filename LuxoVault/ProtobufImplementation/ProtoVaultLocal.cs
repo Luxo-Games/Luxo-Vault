@@ -1,12 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Mime;
-using System.Runtime.Serialization.Formatters.Binary;
 using Google.Protobuf;
 using ProtoBuf;
 using Vault.Interfaces;
+
+namespace LuxoVault.ProtobufImplementation;
 
 public class ProtoVaultLocal<T> : IVault<T> where T : IMessage<T>
 {
@@ -30,23 +26,15 @@ public class ProtoVaultLocal<T> : IVault<T> where T : IMessage<T>
     /// <summary>
     /// Saves an instance of a class T to a local binary file.
     /// </summary>
-    /// <param name="data"></param>
-    /// <param name="filename"></param>
+    /// <param name="data">The instance of the DTO</param>
+    /// <param name="filename">The name the DTO should be saved as</param>
     public async Task SaveData(T data, String filename)
-    {
-        try
+    { 
+        string filePath = GetFilePath(filename);
+        using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
         {
-            string filePath = GetFilePath(filename);
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                data.WriteTo(fileStream);
-                await fileStream.FlushAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An unexpected error occurred while loading data: {ex.Message}");
-            throw;
+            data.WriteTo(fileStream);
+            await fileStream.FlushAsync();
         }
     }
 
