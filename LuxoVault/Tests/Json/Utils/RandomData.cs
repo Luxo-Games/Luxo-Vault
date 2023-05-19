@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Vault.Tests.Utils;
+namespace LuxoVault.Tests.Json.Utils;
 
 public class RandomData
 {

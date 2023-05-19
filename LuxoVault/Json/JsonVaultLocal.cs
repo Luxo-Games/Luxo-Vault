@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using LuxoVault.JsonImplementation.Exceptions;
+using LuxoVault.Json.Exceptions;
 using Vault.Interfaces;
 
 namespace LuxoVault.Json;
