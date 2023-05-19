@@ -48,12 +48,12 @@ public class JsonVaultLocal <T> : IVault<T>
     public async Task<T?> LoadData(string filename)
     {
         filename += ".json";
-        if (!File.Exists(filename))
+        if (!File.Exists(Path+filename))
         {
-            throw new FileNotFoundException("Vault file not found.");
+            throw new FileNotFoundException($"{Path}{filename}.json file not found.");
         }
 
-        string jsonData = await File.ReadAllTextAsync(filename);
+        string jsonData = await File.ReadAllTextAsync(Path+filename);
 
         if (!ValidateSignature(jsonData)) throw new InvalidSignatureException();
         jsonData = RemoveSignatureFromData(jsonData);

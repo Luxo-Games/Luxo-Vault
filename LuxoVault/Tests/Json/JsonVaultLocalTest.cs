@@ -13,23 +13,27 @@ public class JsonVaultLocalTest
     public class JsonVaultLocalTests
     {
         private const string Secret = "mySecret";
+        string filename = "testfile";
 
         [Test]
         public async Task SaveData_ValidData_FileCreated()
         {
             var TestData = RandomData.GenerateRandomData();
             // Arrange
-            string filename = "testfile.json";
             JsonVaultLocal<RandomData> vault = new JsonVaultLocal<RandomData>(Path.GetTempPath(), Secret);
 
             // Act
             await vault.SaveData(TestData, filename);
 
+            var filepath = vault.Path + filename + ".json";
+
             // Assert
             Assert.True(File.Exists(filename));
 
+            foreach (string st in File.ReadLines(filepath)) Console.WriteLine(st);
+
             // Clean up
-            File.Delete(filename);
+            File.Delete(filepath);
         }
 
         [Test]
@@ -37,7 +41,6 @@ public class JsonVaultLocalTest
         {
             RandomData? testData = RandomData.GenerateRandomData();
             // Arrange
-            string filename = "testfile.json";
             JsonVaultLocal<RandomData> vault = new JsonVaultLocal<RandomData>(Path.GetTempPath(), Secret);
             await vault.SaveData(testData, filename);
 
@@ -47,19 +50,21 @@ public class JsonVaultLocalTest
             // Assert
             Assert.AreEqual(testData, loadedData);
 
+            var filepath = vault.Path + filename + ".json";
+            
             // Clean up
-            File.Delete(filename);
+            File.Delete(filepath);
         }
 
         [Test]
         public async Task LoadData_InvalidFile_ThrowsFileNotFoundException()
         {
             // Arrange
-            string filename = "nonexistent.json";
+            string fakeFileName = "nonexistent";
             JsonVaultLocal<string> vault = new JsonVaultLocal<string>(Path.GetTempPath(), Secret);
 
             // Act and Assert
-            Assert.ThrowsAsync<FileNotFoundException>(() => vault.LoadData(filename));
+            Assert.ThrowsAsync<FileNotFoundException>(() => vault.LoadData(fakeFileName));
         }
 
         [Test]
@@ -67,16 +72,22 @@ public class JsonVaultLocalTest
         {
             var TestData = RandomData.GenerateRandomData();
             // Arrange
-            string filename = "testfile.json";
             JsonVaultLocal<RandomData> vault = new JsonVaultLocal<RandomData>(Path.GetTempPath(), Secret);
             string jsonWithInvalidSignature = AddInvalidSignatureToData(TestData.ToJson());
-            File.WriteAllText(filename, jsonWithInvalidSignature);
+            var filepath = vault.Path + filename + ".json";
+            File.WriteAllText(filepath, jsonWithInvalidSignature);
 
             // Act and Assert
             Assert.ThrowsAsync<InvalidSignatureException>(() => vault.LoadData(filename));
 
             // Clean up
-            File.Delete(filename);
+            File.Delete(filepath);
+        }
+
+        [OneTimeTearDown]
+        public void TearDown()
+        {
+            File.Delete(Path.GetTempPath()+filename+".json");
         }
 
         private string AddInvalidSignatureToData(string data)
@@ -110,5 +121,7 @@ public class JsonVaultLocalTest
                 }
             }
         }
+        
+        
     }
 }
