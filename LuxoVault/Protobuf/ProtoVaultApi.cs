@@ -7,16 +7,18 @@ namespace LuxoVault.Protobuf;
 public class ProtoVaultApi<T> : IVault<T> where T : IExtensible, new()
 {
     private readonly HttpClient httpClient;
+    // ReSharper disable once MemberCanBePrivate.Global
     public readonly string GetUrl;
+    // ReSharper disable once MemberCanBePrivate.Global
     public readonly string PostUrl;
 
-    public ProtoVaultApi(HttpClient httpClient, string url) : this(httpClient, url, url)
+    public ProtoVaultApi(string url) : this(url, url)
     {
     }
 
-    public ProtoVaultApi(HttpClient httpClient, string getUrl, string postUrl)
+    public ProtoVaultApi(string getUrl, string postUrl)
     {
-        this.httpClient = httpClient;
+        httpClient = new HttpClient();
         GetUrl = getUrl;
         PostUrl = postUrl;
     }
@@ -29,7 +31,7 @@ public class ProtoVaultApi<T> : IVault<T> where T : IExtensible, new()
             byte[] serializedData = stream.ToArray();
 
             ByteArrayContent content = new ByteArrayContent(serializedData);
-            HttpResponseMessage response = await httpClient.PostAsync($"api/save/{filename}", content);
+            HttpResponseMessage response = await httpClient.PostAsync(PostUrl+filename, content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -40,7 +42,7 @@ public class ProtoVaultApi<T> : IVault<T> where T : IExtensible, new()
 
     public async Task<T?> LoadData(string filename)
     {
-        HttpResponseMessage response = await httpClient.GetAsync($"api/load/{filename}");
+        HttpResponseMessage response = await httpClient.GetAsync(GetUrl+filename);
 
         if (!response.IsSuccessStatusCode)
         {
