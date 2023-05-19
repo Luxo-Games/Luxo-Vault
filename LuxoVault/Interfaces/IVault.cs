@@ -1,6 +1,4 @@
-﻿using Google.Protobuf;
-
-namespace Vault.Interfaces;
+﻿namespace LuxoVault.Interfaces;
 
 public interface IVault <T>
 {
