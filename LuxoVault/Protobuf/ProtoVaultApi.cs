@@ -1,21 +1,21 @@
 ﻿using Google.Protobuf;
 using Vault.Interfaces;
 
-namespace LuxoVault.ProtobufImplementation;
+namespace LuxoVault.Protobuf;
 
 public class ProtoVaultApi<T> : IVault<T> where T : IMessage<T>, new()
 {
     private readonly HttpClient httpClient;
     public readonly String GetUrl;
     public readonly String PostUrl;
-    private readonly MessageParser<T> messageParser;
+    private readonly MessageParser<T?> messageParser;
 
     public ProtoVaultApi(HttpClient httpClient, string url) : this(httpClient, url, url) { }
 
     public ProtoVaultApi(HttpClient httpClient, string getUrl, string postUrl)
     {
         this.httpClient = httpClient;
-        messageParser = new MessageParser<T>(() => new T());
+        messageParser = new MessageParser<T?>(() => new T());
         GetUrl = getUrl;
         PostUrl = postUrl;
     }
@@ -32,7 +32,7 @@ public class ProtoVaultApi<T> : IVault<T> where T : IMessage<T>, new()
         }
     }
 
-    public async Task<T> LoadData(string filename)
+    public async Task<T?> LoadData(string filename)
     {
         try
         {
@@ -44,7 +44,7 @@ public class ProtoVaultApi<T> : IVault<T> where T : IMessage<T>, new()
             }
 
             byte[] responseData = await response.Content.ReadAsByteArrayAsync();
-            T data = messageParser.ParseFrom(responseData);
+            T? data = messageParser.ParseFrom(responseData);
             return data;
         }
         catch (Exception ex)

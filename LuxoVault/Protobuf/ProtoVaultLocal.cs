@@ -1,8 +1,7 @@
-using Google.Protobuf;
 using ProtoBuf;
 using Vault.Interfaces;
 
-namespace LuxoVault.ProtobufImplementation;
+namespace LuxoVault.Protobuf;
 
 public class ProtoVaultLocal<T> : IVault<T> where T : IMessage<T>
 {
@@ -46,41 +45,21 @@ public class ProtoVaultLocal<T> : IVault<T> where T : IMessage<T>
     /// <returns>An instance of the specified class.</returns>
     /// <exception cref="FileNotFoundException">No file with the specified name was found</exception>
     /// <exception cref="IOException">There was an error while reading the file</exception>
-    public async Task<T> LoadData(String filename) 
+    public async Task<T?> LoadData(String filename) 
     {
-        try
+        string filePath = GetFilePath(filename);
+        using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
         {
-            string filePath = GetFilePath(filename);
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
-            {
-                byte[] buffer = new byte[fileStream.Length];
-                await fileStream.ReadAsync(buffer, 0, buffer.Length);
+            byte[] buffer = new byte[fileStream.Length];
+            await fileStream.ReadAsync(buffer, 0, buffer.Length);
 
-                T data = await Task.Run(() =>
-                {
-                    using (MemoryStream memoryStream = new MemoryStream(buffer))
-                    {
-                        return Serializer.Deserialize<T>(memoryStream);
-                    }
-                });
+            T? data = await Task.Run(() =>
+            {
+                using MemoryStream memoryStream = new MemoryStream(buffer);
+                return Serializer.Deserialize<T>(memoryStream);
+            });
 
                 return data;
-            }
-        }
-        catch (FileNotFoundException ex)
-        {
-            Console.WriteLine($"File not found: {ex.Message}");
-            throw;
-        }
-        catch (IOException ex)
-        {
-            Console.WriteLine($"An error occurred while loading data: {ex.Message}");
-            throw;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An unexpected error occurred while loading data: {ex.Message}");
-            throw;
         }
     }
 
