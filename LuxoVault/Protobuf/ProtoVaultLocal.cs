@@ -16,10 +16,10 @@ public class ProtoVaultLocal<T> : IVault<T> where T : IExtensible
     /// </summary>
     public readonly String FileExtension;
     
-    public ProtoVaultLocal(String path, String fileExtention)
+    public ProtoVaultLocal(String path, String fileExtension)
     {
         Path = path;
-        FileExtension = "."+fileExtention;
+        FileExtension = "."+fileExtension;
     }
 
     
