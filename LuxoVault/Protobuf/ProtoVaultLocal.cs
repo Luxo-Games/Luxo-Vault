@@ -1,9 +1,10 @@
+using LuxoVault.Interfaces;
+using LuxoVault.Protobuf.Exceptions;
 using ProtoBuf;
-using Vault.Interfaces;
 
 namespace LuxoVault.Protobuf;
 
-public class ProtoVaultLocal<T> : IVault<T> where T : IMessage<T>
+public class ProtoVaultLocal<T> : IVault<T> where T : IExtensible
 {
     /// <summary>
     /// The absolute Path where the File should be saved
@@ -30,9 +31,10 @@ public class ProtoVaultLocal<T> : IVault<T> where T : IMessage<T>
     public async Task SaveData(T data, String filename)
     { 
         string filePath = GetFilePath(filename);
+    
         using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
         {
-            data.WriteTo(fileStream);
+            Serializer.Serialize(fileStream, data);
             await fileStream.FlushAsync();
         }
     }
@@ -45,13 +47,15 @@ public class ProtoVaultLocal<T> : IVault<T> where T : IMessage<T>
     /// <returns>An instance of the specified class.</returns>
     /// <exception cref="FileNotFoundException">No file with the specified name was found</exception>
     /// <exception cref="IOException">There was an error while reading the file</exception>
+    /// <exception cref="ReadFileSizeMismatchException">The amount of bytes read was less than requested</exception>
     public async Task<T?> LoadData(String filename) 
     {
         string filePath = GetFilePath(filename);
         using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
         {
             byte[] buffer = new byte[fileStream.Length];
-            await fileStream.ReadAsync(buffer, 0, buffer.Length);
+            int byteAmount = await fileStream.ReadAsync(buffer, 0, buffer.Length);
+            if (byteAmount < buffer.Length) throw new ReadFileSizeMismatchException();
 
             T? data = await Task.Run(() =>
             {

@@ -1,56 +1,55 @@
-﻿using Google.Protobuf;
-using Vault.Interfaces;
+﻿using LuxoVault.Interfaces;
+using LuxoVault.Protobuf.Exceptions;
+using ProtoBuf;
 
 namespace LuxoVault.Protobuf;
 
-public class ProtoVaultApi<T> : IVault<T> where T : IMessage<T>, new()
+public class ProtoVaultApi<T> : IVault<T> where T : IExtensible, new()
 {
     private readonly HttpClient httpClient;
-    public readonly String GetUrl;
-    public readonly String PostUrl;
-    private readonly MessageParser<T?> messageParser;
+    public readonly string GetUrl;
+    public readonly string PostUrl;
 
-    public ProtoVaultApi(HttpClient httpClient, string url) : this(httpClient, url, url) { }
+    public ProtoVaultApi(HttpClient httpClient, string url) : this(httpClient, url, url)
+    {
+    }
 
     public ProtoVaultApi(HttpClient httpClient, string getUrl, string postUrl)
     {
         this.httpClient = httpClient;
-        messageParser = new MessageParser<T?>(() => new T());
         GetUrl = getUrl;
         PostUrl = postUrl;
     }
 
     public async Task SaveData(T data, string filename)
     {
-        byte[] serializedData = data.ToByteArray();
-        ByteArrayContent content = new ByteArrayContent(serializedData);
-        HttpResponseMessage response = await httpClient.PostAsync($"api/save/{filename}", content);
-
-        if (!response.IsSuccessStatusCode)
+        using (MemoryStream stream = new MemoryStream())
         {
-            throw new Exception($"Failed to save data. Status code: {response.StatusCode}");
+            Serializer.Serialize(stream, data);
+            byte[] serializedData = stream.ToArray();
+
+            ByteArrayContent content = new ByteArrayContent(serializedData);
+            HttpResponseMessage response = await httpClient.PostAsync($"api/save/{filename}", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to save data. Status code: {response.StatusCode}");
+            }
         }
     }
 
     public async Task<T?> LoadData(string filename)
     {
-        try
-        {
-            HttpResponseMessage response = await httpClient.GetAsync($"api/load/{filename}");
+        HttpResponseMessage response = await httpClient.GetAsync($"api/load/{filename}");
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to load data. Status code: {response.StatusCode}");
-            }
-
-            byte[] responseData = await response.Content.ReadAsByteArrayAsync();
-            T? data = messageParser.ParseFrom(responseData);
-            return data;
-        }
-        catch (Exception ex)
+        if (!response.IsSuccessStatusCode)
         {
-            Console.WriteLine($"An error occurred while loading data: {ex.Message}");
-            throw;
+            throw new HttpResponseException(response.StatusCode);
         }
+
+        byte[] responseData = await response.Content.ReadAsByteArrayAsync();
+        using MemoryStream stream = new MemoryStream(responseData);
+        T? data = Serializer.Deserialize<T>(stream);
+        return data;
     }
 }
