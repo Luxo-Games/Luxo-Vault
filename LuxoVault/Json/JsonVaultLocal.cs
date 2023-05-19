@@ -6,26 +6,48 @@ using LuxoVault.Json.Exceptions;
 
 namespace LuxoVault.Json;
 
+/// <summary>
+/// A Vault saving your files locally as signed JSON
+/// </summary>
+/// <typeparam name="T">DTO that can be serialized to JSON</typeparam>
 public class JsonVaultLocal <T> : IVault<T>
 {
-    public readonly String path;
-    private readonly String secret;
+    /// <summary>
+    /// Absolute path your JSON files will be stored at
+    /// </summary>
+    public readonly string Path;
+    private readonly string secret;
     
-    public JsonVaultLocal(String path, String secret)
+    /// <param name="path">The absolute path your JSON files will be stored at</param>
+    /// <param name="secret">The secret that will be used to create and validate signatures. KEEP THIS SOMEWHERE SAFE!</param>
+    public JsonVaultLocal(string path, string secret)
     {
-        this.path = path;
+        Path = path;
         this.secret = secret;
     }
 
+    /// <summary>
+    /// Serialize a DTO to JSON, signs it, and stores the file locally
+    /// </summary>
+    /// <param name="data">The DTO that will be serialized to JSON</param>
+    /// <param name="filename">Name of the JSON file without the file extension</param>
     public async Task SaveData(T data, string filename)
     {
-
+        filename += ".json";
         string jsonData = AddSignatureToData(data);
-        await File.WriteAllTextAsync(filename, jsonData);
+        await File.WriteAllTextAsync(Path+filename, jsonData);
     }
 
+    /// <summary>
+    /// Loads a signed JSON file from local disk and validates it's signature
+    /// </summary>
+    /// <param name="filename">Name of the JSON file without the file extension</param>
+    /// <returns></returns>
+    /// <exception cref="FileNotFoundException">No JSON file with the specified name was found</exception>
+    /// <exception cref="InvalidSignatureException">Thrown when your data has been tampered with</exception>
     public async Task<T?> LoadData(string filename)
     {
+        filename += ".json";
         if (!File.Exists(filename))
         {
             throw new FileNotFoundException("Vault file not found.");
@@ -47,12 +69,10 @@ public class JsonVaultLocal <T> : IVault<T>
         byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
         byte[] secretBytes = Encoding.UTF8.GetBytes(secret);
 
-        using (HMACSHA256 hmac = new HMACSHA256(secretBytes))
-        {
-            byte[] hashBytes = hmac.ComputeHash(jsonBytes);
-            string signature = Convert.ToBase64String(hashBytes);
-            return signature;
-        }
+        using HMACSHA256 hmac = new HMACSHA256(secretBytes);
+        byte[] hashBytes = hmac.ComputeHash(jsonBytes);
+        string signature = Convert.ToBase64String(hashBytes);
+        return signature;
     }
 
     private string AddSignatureToData(T data)
@@ -61,26 +81,24 @@ public class JsonVaultLocal <T> : IVault<T>
         string signature = GenerateSignature(json);
 
         JsonDocument jsonDocument = JsonDocument.Parse(json);
-        using (MemoryStream stream = new MemoryStream())
+        using MemoryStream stream = new MemoryStream();
+        using (Utf8JsonWriter writer = new Utf8JsonWriter(stream))
         {
-            using (Utf8JsonWriter writer = new Utf8JsonWriter(stream))
+            writer.WriteStartObject();
+
+            // Copy the existing properties from the original JSON
+            foreach (JsonProperty property in jsonDocument.RootElement.EnumerateObject())
             {
-                writer.WriteStartObject();
-
-                // Copy the existing properties from the original JSON
-                foreach (JsonProperty property in jsonDocument.RootElement.EnumerateObject())
-                {
-                    property.WriteTo(writer);
-                }
-
-                // Add the signature as a new property
-                writer.WriteString("signature", signature);
-
-                writer.WriteEndObject();
+                property.WriteTo(writer);
             }
 
-            return Encoding.UTF8.GetString(stream.ToArray());
+            // Add the signature as a new property
+            writer.WriteString("signature", signature);
+
+            writer.WriteEndObject();
         }
+
+        return Encoding.UTF8.GetString(stream.ToArray());
     }
 
     private bool ValidateSignature(string json)

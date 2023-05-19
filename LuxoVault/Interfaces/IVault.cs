@@ -2,7 +2,7 @@
 
 public interface IVault <T>
 {
-    Task SaveData(T data, String filename);
+    Task SaveData(T data, string filename);
 
-    Task<T?> LoadData(String filename);
+    Task<T?> LoadData(string filename);
 }

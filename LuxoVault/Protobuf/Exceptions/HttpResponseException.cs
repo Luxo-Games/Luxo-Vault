@@ -4,5 +4,11 @@ namespace LuxoVault.Protobuf.Exceptions;
 
 public class HttpResponseException : Exception
 {
-    public HttpResponseException(HttpStatusCode responseStatus) : base($"Failed to load data. Status code: {responseStatus}") {}
+    public readonly HttpStatusCode StatusCode;
+
+    public HttpResponseException(HttpStatusCode responseStatus) : base(
+        $"Failed to load data. Status code: {responseStatus}")
+    {
+        StatusCode = responseStatus;
+    }
 }
