@@ -31,9 +31,6 @@ public class JsonVaultLocalTest
             Assert.True(File.Exists(filename));
 
             foreach (string st in File.ReadLines(filepath)) Console.WriteLine(st);
-
-            // Clean up
-            File.Delete(filepath);
         }
 
         [Test]
@@ -51,9 +48,6 @@ public class JsonVaultLocalTest
             Assert.AreEqual(testData, loadedData);
 
             var filepath = vault.Path + filename + ".json";
-            
-            // Clean up
-            File.Delete(filepath);
         }
 
         [Test]
@@ -79,12 +73,9 @@ public class JsonVaultLocalTest
 
             // Act and Assert
             Assert.ThrowsAsync<InvalidSignatureException>(() => vault.LoadData(filename));
-
-            // Clean up
-            File.Delete(filepath);
         }
 
-        [OneTimeTearDown]
+        [TearDown]
         public void TearDown()
         {
             File.Delete(Path.GetTempPath()+filename+".json");
