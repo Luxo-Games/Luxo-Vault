@@ -4,6 +4,10 @@ using ProtoBuf;
 
 namespace LuxoVault.Protobuf;
 
+/// <summary>
+/// A Vault that saves Protobuf data locally
+/// </summary>
+/// <typeparam name="T">DTO Class implementing the IExtensible interface of protobuf-net</typeparam>
 public class ProtoVaultLocal<T> : IVault<T> where T : IExtensible
 {
     /// <summary>
@@ -16,6 +20,11 @@ public class ProtoVaultLocal<T> : IVault<T> where T : IExtensible
     /// </summary>
     public readonly String FileExtension;
     
+    /// <summary>
+    /// Creates an instance of ProtoVaultLocal
+    /// </summary>
+    /// <param name="path">The absolute path. All files will be saved to this location</param>
+    /// <param name="fileExtension">The File Extension without the leading dot. All files will be saved  the corresponding file type</param>
     public ProtoVaultLocal(String path, String fileExtension)
     {
         Path = path;
