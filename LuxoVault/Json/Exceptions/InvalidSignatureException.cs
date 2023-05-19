@@ -1,4 +1,4 @@
-﻿namespace LuxoVault.JsonImplementation.Exceptions;
+﻿namespace LuxoVault.Json.Exceptions;
 
 public class InvalidSignatureException : Exception
 {

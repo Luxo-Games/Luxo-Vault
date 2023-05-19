@@ -2,11 +2,11 @@
 using System.Text;
 using System.Text.Json;
 using LuxoVault.Json;
-using LuxoVault.JsonImplementation.Exceptions;
+using LuxoVault.Json.Exceptions;
+using LuxoVault.Tests.Json.Utils;
 using NUnit.Framework;
-using Vault.Tests.Utils;
 
-namespace Vault.Tests;
+namespace LuxoVault.Tests.Json;
 
 public class JsonVaultLocalTest
 {
