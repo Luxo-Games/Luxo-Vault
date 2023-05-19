@@ -3,10 +3,10 @@ using System.Text;
 using System.Text.Json;
 using LuxoVault.Json;
 using LuxoVault.Json.Exceptions;
-using LuxoVault.Tests.Json.Utils;
 using NUnit.Framework;
+using Tests.Json.Utils;
 
-namespace LuxoVault.Tests.Json;
+namespace Tests.Json;
 
 public class JsonVaultLocalTest
 {
@@ -28,7 +28,7 @@ public class JsonVaultLocalTest
             var filepath = vault.Path + filename + ".json";
 
             // Assert
-            Assert.True(File.Exists(filename));
+            Assert.True(File.Exists(filepath));
 
             foreach (string st in File.ReadLines(filepath)) Console.WriteLine(st);
         }
