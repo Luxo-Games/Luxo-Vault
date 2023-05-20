@@ -6,9 +6,4 @@
         <Nullable>enable</Nullable>
         <RootNamespace>LuxoVault</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
-      <PackageReference Include="NUnit" Version="3.13.3" />
-    </ItemGroup>
 </Project>
