@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuxoVault.Core", "LuxoVault.Core\LuxoVault.Core.csproj", "{F26F45B6-52B6-419E-BCB0-9CE654840A4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{7AD19636-7C3E-43E7-B63F-052DB8D57439}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuxoVault.Json", "LuxoVault.Json\LuxoVault.Json.csproj", "{C319E953-D87E-46CC-846B-FC083907FECC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuxoVault.Protobuf", "LuxoVault.Protobuf\LuxoVault.Protobuf.csproj", "{A6F469A0-A4BA-46C8-B6CA-09D749DE2C8D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F26F45B6-52B6-419E-BCB0-9CE654840A4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F26F45B6-52B6-419E-BCB0-9CE654840A4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F26F45B6-52B6-419E-BCB0-9CE654840A4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F26F45B6-52B6-419E-BCB0-9CE654840A4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AD19636-7C3E-43E7-B63F-052DB8D57439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AD19636-7C3E-43E7-B63F-052DB8D57439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AD19636-7C3E-43E7-B63F-052DB8D57439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AD19636-7C3E-43E7-B63F-052DB8D57439}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C319E953-D87E-46CC-846B-FC083907FECC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C319E953-D87E-46CC-846B-FC083907FECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C319E953-D87E-46CC-846B-FC083907FECC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C319E953-D87E-46CC-846B-FC083907FECC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6F469A0-A4BA-46C8-B6CA-09D749DE2C8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6F469A0-A4BA-46C8-B6CA-09D749DE2C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6F469A0-A4BA-46C8-B6CA-09D749DE2C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6F469A0-A4BA-46C8-B6CA-09D749DE2C8D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
