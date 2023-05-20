@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuxoVault.Core", "LuxoVault.Core\LuxoVault.Core.csproj", "{F26F45B6-52B6-419E-BCB0-9CE654840A4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{7AD19636-7C3E-43E7-B63F-052DB8D57439}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuxoVault.Tests", "LuxoVault.Tests\LuxoVault.Tests.csproj", "{7AD19636-7C3E-43E7-B63F-052DB8D57439}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuxoVault.Json", "LuxoVault.Json\LuxoVault.Json.csproj", "{C319E953-D87E-46CC-846B-FC083907FECC}"
 EndProject
