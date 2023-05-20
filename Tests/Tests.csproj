@@ -17,7 +17,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LuxoVault\LuxoVault.csproj" />
+      <ProjectReference Include="..\LuxoVault.Core\LuxoVault.Core.csproj" />
+      <ProjectReference Include="..\LuxoVault.Json\LuxoVault.Json.csproj" />
+      <ProjectReference Include="..\LuxoVault.Protobuf\LuxoVault.Protobuf.csproj" />
     </ItemGroup>
 
 </Project>
