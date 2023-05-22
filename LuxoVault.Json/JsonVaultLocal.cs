@@ -64,9 +64,9 @@ public class JsonVaultLocal <T> : IVault<T>
 
     #region Signature Logic
 
-    private string GenerateSignature(string json)
+    private string GenerateSignature(string data)
     {
-        byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
+        byte[] jsonBytes = Encoding.UTF8.GetBytes(data);
         byte[] secretBytes = Encoding.UTF8.GetBytes(secret);
 
         using HMACSHA256 hmac = new HMACSHA256(secretBytes);
@@ -140,30 +140,27 @@ public class JsonVaultLocal <T> : IVault<T>
         using (JsonDocument jsonDocument = JsonDocument.Parse(jsonData))
         {
             // Check if the signature property exists
-            if (jsonDocument.RootElement.TryGetProperty("signature", out JsonElement signatureElement))
+            if (!jsonDocument.RootElement.TryGetProperty("signature", out JsonElement signatureElement))
+                return jsonData;
+            // Create a copy of the JSON document without the signature property
+            using (MemoryStream stream = new MemoryStream())
             {
-                // Create a copy of the JSON document without the signature property
-                using (MemoryStream stream = new MemoryStream())
+                using (Utf8JsonWriter writer = new Utf8JsonWriter(stream))
                 {
-                    using (Utf8JsonWriter writer = new Utf8JsonWriter(stream))
+                    writer.WriteStartObject();
+
+                    // Copy properties from the original JSON, excluding the signature property
+                    foreach (JsonProperty property in jsonDocument.RootElement.EnumerateObject())
                     {
-                        writer.WriteStartObject();
-
-                        // Copy properties from the original JSON, excluding the signature property
-                        foreach (JsonProperty property in jsonDocument.RootElement.EnumerateObject())
-                        {
-                            if (property.Name != "signature")
-                            {
-                                property.WriteTo(writer);
-                            }
-                        }
-
-                        writer.WriteEndObject();
+                        if (property.Name == "signature") continue;
+                        property.WriteTo(writer);
                     }
 
-                    // Convert the modified JSON object back to a string
-                    jsonData = Encoding.UTF8.GetString(stream.ToArray());
+                    writer.WriteEndObject();
                 }
+
+                // Convert the modified JSON object back to a string
+                jsonData = Encoding.UTF8.GetString(stream.ToArray());
             }
         }
 
